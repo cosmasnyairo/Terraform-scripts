@@ -1,0 +1,10 @@
+.terraform
+.vscode
+*.tfstate*
+terraform.tfvars
+backend.hcl
+.terraform.lock.hcl
+*.cnf
+*.csr
+*.crt
+*.key
