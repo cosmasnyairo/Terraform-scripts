@@ -1,6 +1,7 @@
 # ECR
-resource "aws_ecr_repository" "test_ecr-1" {
-  name = "test_ecr-1"
+resource "aws_ecr_repository" "ecrs" {
+  for_each = var.resources
+  name = each.key
   encryption_configuration {
     encryption_type = var.encryption_type
   }
@@ -10,32 +11,18 @@ resource "aws_ecr_repository" "test_ecr-1" {
   tags = merge(
     var.tags,
     {
-      Name = "test_ecr-1"
+      Name = each.key
     },
   )
 }
 
-resource "aws_ecr_repository" "test_ecr-2" {
-  name = "test_ecr-2"
-  encryption_configuration {
-    encryption_type = var.encryption_type
-  }
-  image_scanning_configuration {
-    scan_on_push = true
-  }
-  tags = merge(
-    var.tags,
-    {
-      Name = "test_ecr-2"
-    },
-  )
-}
 
 # SSL Certificate
 resource "aws_acm_certificate" "test_cert" {
   provider = aws.us-east
-  private_key      = file("test-aws.key")
-  certificate_body = file("test.crt")
+  private_key      = sensitive(file("test-aws.key"))
+  certificate_body = sensitive(file("test.crt"))
+  
   tags = merge(
     var.tags,
     {
@@ -99,7 +86,7 @@ resource "aws_cloudfront_distribution" "test_distribution" {
 #Wait for ec2 instance to pass status checks
 resource "null_resource" "status" {
   provisioner "local-exec" {
-    command = "aws cloudfront wait distribution-deployed --id ${aws_cloudfront_distribution.test_distribution.id} --profile=terraform_profile"
+    command = "aws cloudfront wait distribution-deployed --id ${aws_cloudfront_distribution.test_distribution.id}"
   }
   depends_on = [
     aws_cloudfront_distribution.test_distribution
