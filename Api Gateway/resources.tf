@@ -126,7 +126,7 @@ resource "aws_api_gateway_integration_response" "test-integration-response1" {
   http_method = aws_api_gateway_method.test-method1.http_method
   status_code = aws_api_gateway_method_response.test-method-response1.status_code
   response_templates = var.response_templates
-  response_parameters = var.response_headers
+  response_parameters = var.response_headers3
 }
 
 # Update 4XX Gateway Response headers

@@ -7,6 +7,9 @@ variable "response_headers" {
 variable "response_headers2" {
   type = map(any)
 }
+variable "response_headers3" {
+  type = map(any)
+}
 variable "response_models" {
   type = map(any)
 }
