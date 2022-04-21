@@ -64,9 +64,9 @@ resource "aws_api_gateway_integration" "test-integration" {
   http_method             = aws_api_gateway_method.test-method.http_method
   type                    = var.integration_type
   connection_type         = var.integration_connection_type
-  connection_id           = var.vpclinkid
+  connection_id           = replace("+{stageVariables.vpcid}" , "+", "$")
   integration_http_method = aws_api_gateway_method.test-method.http_method
-  uri                     = var.uri
+  uri                     = replace("${var.uri_start}/+{stageVariables.url}/${var.uri_end}" , "+", "$")
 }
 
 #create Options Integration Request
@@ -157,6 +157,10 @@ resource "aws_api_gateway_stage" "uat" {
   deployment_id = aws_api_gateway_deployment.test-deployment.id
   rest_api_id   = aws_api_gateway_rest_api.rest_api.id
   stage_name    = "uat"
+  variables = {
+    "vpcid" = var.vpclinkid,
+    "uri" = var.base_uri
+  }
   tags = merge(
     var.tags,
     {

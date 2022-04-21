@@ -55,7 +55,13 @@ variable "integration_type1" {
 variable "integration_connection_type" {
   type = string
 }
-variable "uri" {
+variable "base_uri" {
+  type = string
+}
+variable "uri_start" {
+  type = string
+}
+variable "uri_end" {
   type = string
 }
 variable "status_code" {
