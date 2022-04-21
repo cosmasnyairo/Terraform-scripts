@@ -1,0 +1,37 @@
+module "rest-apigateway" {
+  for_each = {for i, record in var.inputvalues : i => record}
+  source                        = "../../Modules/Api-Gateway/restapigateway"
+  name = each.value.name
+  restapidescription = each.value.restapidescription
+  method1                       = each.value.method1
+  method2                       = each.value.method2
+  api_key_required              = each.value.api_key_required
+  authorization_scopes          = each.value.authorization_scopes
+  authorizer                    = each.value.authorizer
+  authorizer_type               = each.value.authorizer_type
+  endpoint_configuration        = each.value.endpoint_configuration
+  identity_source               = each.value.identity_source
+  vpclinkid                     = each.value.vpclinkid
+  integration_connection_type   = each.value.integration_connection_type
+  integration_type              = each.value.integration_type
+  integration_type1             = each.value.integration_type1
+  method2_authorization         = each.value.method2_authorization
+  quota_settings_limit          = each.value.quota_settings_limit
+  quota_settings_offset         = each.value.quota_settings_offset
+  quota_settings_period         = each.value.quota_settings_period
+  response_headers              = each.value.response_headers
+  response_headers2             = each.value.response_headers2
+  response_headers3             = each.value.response_headers3
+  response_models               = each.value.response_models
+  response_templates            = each.value.response_templates
+  response_type                 = each.value.response_type
+  response_type2                = each.value.response_type2
+  status_code                   = each.value.status_code
+  tags                          = var.tags
+  throttle_settings_burst_limit = each.value.throttle_settings_burst_limit
+  throttle_settings_rate_limit  = each.value.throttle_settings_rate_limit
+  base_uri                      = each.value.base_uri
+  uri_end                       = each.value.uri_end
+  uri_start                     = each.value.uri_start
+  vpc_link_target_arns          = each.value.vpc_link_target_arns
+}

@@ -20,8 +20,8 @@ resource "aws_ecr_repository" "ecrs" {
 # SSL Certificate
 resource "aws_acm_certificate" "test_cert" {
   provider = aws.us-east
-  private_key      = sensitive(file("test-aws.key"))
-  certificate_body = sensitive(file("test.crt"))
+  private_key      = sensitive(file("cert/test-aws.key"))
+  certificate_body = sensitive(file("cert/test.crt"))
   
   tags = merge(
     var.tags,

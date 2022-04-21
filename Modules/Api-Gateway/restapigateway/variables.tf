@@ -92,3 +92,11 @@ variable "throttle_settings_rate_limit" {
 variable "vpclinkid" {
   type = string
 }
+
+variable "name" {
+  type = string
+}
+
+variable "restapidescription" {
+  type = string
+}

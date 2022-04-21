@@ -1,14 +1,14 @@
 # Create Rest Api
 resource "aws_api_gateway_rest_api" "rest_api" {
-  name        = "Terraform Demo Api"
-  description = "Demo Api created using terraform"
+  name        = var.name
+  description = var.restapidescription
   endpoint_configuration {
     types = var.endpoint_configuration
   }
   tags = merge(
     var.tags,
     {
-      Name = "Terraform Demo Api"
+      Name = var.name
     },
   )
 }
@@ -35,7 +35,6 @@ resource "aws_api_gateway_resource" "rest_api_resource" {
   parent_id   = aws_api_gateway_resource.testing_api_resource.id
   path_part   = "v1"
 }
-
 
 #Create Method & Method Request
 resource "aws_api_gateway_method" "test-method" {
@@ -183,7 +182,7 @@ resource "aws_api_gateway_api_key" "test-api-key" {
 
 # Add Usage Plan
 resource "aws_api_gateway_usage_plan" "test-usage-plan" {
-  name        = "test-usage-plan"
+  name        = "Usage-plan"
   description = "Test Usage Plan"
   api_stages {
     api_id = aws_api_gateway_rest_api.rest_api.id
