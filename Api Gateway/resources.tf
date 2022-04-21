@@ -57,17 +57,17 @@ resource "aws_api_gateway_method" "test-method" {
   http_method          = var.method1
   authorization        = var.authorizer_type
   authorizer_id        = aws_api_gateway_authorizer.test-authorizer.id
-  authorization_scopes = [ var.authorization_scopes ]
+  authorization_scopes = [var.authorization_scopes]
   api_key_required     = var.api_key_required
 
 }
 
 #Create Options Method & Method Request
 resource "aws_api_gateway_method" "test-method1" {
-  rest_api_id          = aws_api_gateway_rest_api.rest_api.id
-  resource_id          = aws_api_gateway_resource.rest_api_resource.id
-  http_method          = var.method2
-  authorization        = var.method2_authorization
+  rest_api_id   = aws_api_gateway_rest_api.rest_api.id
+  resource_id   = aws_api_gateway_resource.rest_api_resource.id
+  http_method   = var.method2
+  authorization = var.method2_authorization
 }
 
 #create Integration Request
@@ -84,73 +84,84 @@ resource "aws_api_gateway_integration" "test-integration" {
 
 #create Options Integration Request
 resource "aws_api_gateway_integration" "test-integration1" {
-  rest_api_id             = aws_api_gateway_rest_api.rest_api.id
-  resource_id             = aws_api_gateway_resource.rest_api_resource.id
-  http_method             = aws_api_gateway_method.test-method1.http_method
-  type                    = var.integration_type1
+  rest_api_id = aws_api_gateway_rest_api.rest_api.id
+  resource_id = aws_api_gateway_resource.rest_api_resource.id
+  http_method = aws_api_gateway_method.test-method1.http_method
+  type        = var.integration_type1
 }
 
 # create Method Response
 resource "aws_api_gateway_method_response" "test-method-response" {
-  rest_api_id = aws_api_gateway_rest_api.rest_api.id
-  resource_id = aws_api_gateway_resource.rest_api_resource.id
-  http_method = aws_api_gateway_method.test-method.http_method
-  status_code = var.status_code
+  rest_api_id         = aws_api_gateway_rest_api.rest_api.id
+  resource_id         = aws_api_gateway_resource.rest_api_resource.id
+  http_method         = aws_api_gateway_method.test-method.http_method
+  status_code         = var.status_code
   response_parameters = var.response_headers2
-  response_models = var.response_models
+  response_models     = var.response_models
 }
 
 # create Options Method Response
 resource "aws_api_gateway_method_response" "test-method-response1" {
-  rest_api_id = aws_api_gateway_rest_api.rest_api.id
-  resource_id = aws_api_gateway_resource.rest_api_resource.id
-  http_method = aws_api_gateway_method.test-method1.http_method
-  status_code = var.status_code
+  rest_api_id         = aws_api_gateway_rest_api.rest_api.id
+  resource_id         = aws_api_gateway_resource.rest_api_resource.id
+  http_method         = aws_api_gateway_method.test-method1.http_method
+  status_code         = var.status_code
   response_parameters = var.response_headers2
-  response_models = var.response_models
+  response_models     = var.response_models
 }
 
 # create Integration Response
 resource "aws_api_gateway_integration_response" "test-integration-response" {
-  rest_api_id = aws_api_gateway_rest_api.rest_api.id
-  resource_id = aws_api_gateway_resource.rest_api_resource.id
-  http_method = aws_api_gateway_method.test-method.http_method
-  status_code = aws_api_gateway_method_response.test-method-response.status_code
+  rest_api_id        = aws_api_gateway_rest_api.rest_api.id
+  resource_id        = aws_api_gateway_resource.rest_api_resource.id
+  http_method        = aws_api_gateway_method.test-method.http_method
+  status_code        = aws_api_gateway_method_response.test-method-response.status_code
   response_templates = var.response_templates
+  depends_on = [
+    aws_api_gateway_integration.test-integration
+  ]
 }
 
 # create Options Integration Response
 resource "aws_api_gateway_integration_response" "test-integration-response1" {
-  rest_api_id = aws_api_gateway_rest_api.rest_api.id
-  resource_id = aws_api_gateway_resource.rest_api_resource.id
-  http_method = aws_api_gateway_method.test-method1.http_method
-  status_code = aws_api_gateway_method_response.test-method-response1.status_code
-  response_templates = var.response_templates
+  rest_api_id         = aws_api_gateway_rest_api.rest_api.id
+  resource_id         = aws_api_gateway_resource.rest_api_resource.id
+  http_method         = aws_api_gateway_method.test-method1.http_method
+  status_code         = aws_api_gateway_method_response.test-method-response1.status_code
+  response_templates  = var.response_templates
   response_parameters = var.response_headers3
+  depends_on = [
+    aws_api_gateway_integration.test-integration1
+  ]
 }
 
 # Update 4XX Gateway Response headers
 resource "aws_api_gateway_gateway_response" "test_gateway_reponse" {
-  rest_api_id   = aws_api_gateway_rest_api.rest_api.id
-  response_type = var.response_type
+  rest_api_id         = aws_api_gateway_rest_api.rest_api.id
+  response_type       = var.response_type
   response_parameters = var.response_headers
 }
 
 # Update 5XX Gateway Response headers
 resource "aws_api_gateway_gateway_response" "test_gateway_reponse1" {
-  rest_api_id   = aws_api_gateway_rest_api.rest_api.id
-  response_type = var.response_type2
+  rest_api_id         = aws_api_gateway_rest_api.rest_api.id
+  response_type       = var.response_type2
   response_parameters = var.response_headers
 }
 
 # Create Deployment
 resource "aws_api_gateway_deployment" "test-deployment" {
-  rest_api_id   = aws_api_gateway_rest_api.rest_api.id
+  rest_api_id = aws_api_gateway_rest_api.rest_api.id
   lifecycle {
     create_before_destroy = true
   }
   depends_on = [
-    aws_api_gateway_gateway_response.test_gateway_reponse1
+    aws_api_gateway_method.test-method,
+    aws_api_gateway_method.test-method1,
+    aws_api_gateway_gateway_response.test_gateway_reponse,
+    aws_api_gateway_gateway_response.test_gateway_reponse1,
+    aws_api_gateway_integration_response.test-integration-response,
+    aws_api_gateway_integration_response.test-integration-response1
   ]
 }
 
@@ -169,7 +180,7 @@ resource "aws_api_gateway_stage" "uat" {
 
 # Add Api Key
 resource "aws_api_gateway_api_key" "test-api-key" {
-  name = "test-api-key"
+  name        = "test-api-key"
   description = "Test API Key"
   tags = merge(
     var.tags,
@@ -181,8 +192,8 @@ resource "aws_api_gateway_api_key" "test-api-key" {
 
 # Add Usage Plan
 resource "aws_api_gateway_usage_plan" "test-usage-plan" {
-  name         = "test-usage-plan"
-  description  = "Test Usage Plan"
+  name        = "test-usage-plan"
+  description = "Test Usage Plan"
   api_stages {
     api_id = aws_api_gateway_rest_api.rest_api.id
     stage  = aws_api_gateway_stage.uat.stage_name
