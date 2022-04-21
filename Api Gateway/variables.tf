@@ -82,3 +82,7 @@ variable "throttle_settings_burst_limit" {
 variable "throttle_settings_rate_limit" {
   type = number
 }
+
+variable "vpclinkid" {
+  type = string
+}

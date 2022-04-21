@@ -22,19 +22,6 @@ resource "aws_api_gateway_authorizer" "test-authorizer" {
   identity_source = var.identity_source
 }
 
-#Create VPC link
-resource "aws_api_gateway_vpc_link" "test-vpc-link" {
-  name        = "test-vpc-link"
-  description = "example vpc link"
-  target_arns = var.vpc_link_target_arns
-  tags = merge(
-    var.tags,
-    {
-      Name = "Terraform Demo Api"
-    },
-  )
-}
-
 # Create Base Resource
 resource "aws_api_gateway_resource" "testing_api_resource" {
   rest_api_id = aws_api_gateway_rest_api.rest_api.id
@@ -77,7 +64,7 @@ resource "aws_api_gateway_integration" "test-integration" {
   http_method             = aws_api_gateway_method.test-method.http_method
   type                    = var.integration_type
   connection_type         = var.integration_connection_type
-  connection_id           = aws_api_gateway_vpc_link.test-vpc-link.id
+  connection_id           = var.vpclinkid
   integration_http_method = aws_api_gateway_method.test-method.http_method
   uri                     = var.uri
 }
